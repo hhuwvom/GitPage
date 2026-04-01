@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>夢幻模擬戰｜戰棋也能吃雞｜遊戲內活動公告 UI</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#141c33;
+      --panel-2:#1a2644;
+      --panel-3:#22345f;
+      --line:#314878;
+      --line-2:#49629a;
+      --text:#f2f6ff;
+      --muted:#aebddd;
+      --gold:#f1c97a;
+      --gold-2:#ffebb7;
+      --blue:#78b8ff;
+      --red:#ff7f7f;
+      --green:#7fe6a4;
+      --shadow:0 20px 50px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(120,184,255,.14), transparent 22%),
+        radial-gradient(circle at 100% 100%, rgba(241,201,122,.10), transparent 24%),
+        linear-gradient(180deg, #09101d 0%, #0d1425 100%);
+      color:var(--text);
+      min-height:100vh;
+      letter-spacing:.01em;
+    }
+    .app{
+      width:min(1280px, calc(100% - 24px));
+      margin:18px auto;
+      border:1px solid #243455;
+      border-radius:24px;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(16,23,41,.98), rgba(10,16,30,.98));
+      box-shadow:var(--shadow);
+    }
+    .topbar{
+      height:64px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 18px;
+      background:linear-gradient(180deg, #19284a, #121d35);
+      border-bottom:1px solid #2b3f67;
+    }
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:1000;
+      letter-spacing:.04em;
+    }
+    .logo-badge{
+      width:34px;height:34px;border-radius:10px;
+      display:grid;place-items:center;
+      background:linear-gradient(180deg, #395a97, #233a68);
+      border:1px solid #5676b0;
+      color:#ffe8a9;
+      font-size:18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.15);
+    }
+    .resources{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .res{
+      min-width:110px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid #314a79;
+      color:#dfe8ff;
+      font-size:13px;
+      text-align:center;
+    }
+
+    .content{
+      display:grid;
+      grid-template-columns:280px 1fr;
+      min-height:760px;
+    }
+
+    .sidebar{
+      background:linear-gradient(180deg, #121b32, #0f172c);
+      border-right:1px solid #24385d;
+      padding:16px;
+    }
+    .sidebar-title{
+      color:#ffecb8;
+      font-size:13px;
+      font-weight:900;
+      letter-spacing:.14em;
+      margin-bottom:12px;
+      opacity:.9;
+    }
+    .menu{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .menu-item{
+      padding:14px 14px 14px 16px;
+      border-radius:16px;
+      border:1px solid #24385d;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+      color:#dce7ff;
+      position:relative;
+      overflow:hidden;
+    }
+    .menu-item .small{
+      display:block;
+      color:#8fa3cf;
+      font-size:12px;
+      margin-top:5px;
+      line-height:1.6;
+    }
+    .menu-item.active{
+      background:linear-gradient(180deg, rgba(76,110,175,.38), rgba(43,65,108,.38));
+      border-color:#5578bc;
+      box-shadow:0 12px 26px rgba(38,70,130,.22);
+    }
+    .menu-item.active::before{
+      content:"HOT";
+      position:absolute;
+      top:10px;
+      right:12px;
+      font-size:11px;
+      font-weight:900;
+      color:#ffe7a3;
+    }
+
+    .main{
+      padding:18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.01), rgba(255,255,255,.00));
+    }
+
+    .banner{
+      position:relative;
+      border-radius:24px;
+      overflow:hidden;
+      border:1px solid #35518a;
+      background:
+        radial-gradient(circle at 75% 30%, rgba(255,221,143,.16), transparent 20%),
+        radial-gradient(circle at 10% 20%, rgba(120,184,255,.12), transparent 22%),
+        linear-gradient(135deg, #1b2c53 0%, #172646 45%, #101a31 100%);
+      box-shadow:0 22px 40px rgba(0,0,0,.28);
+    }
+    .banner::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(115deg, transparent 0 48%, rgba(255,255,255,.06) 50%, transparent 52%),
+        repeating-linear-gradient(135deg, rgba(255,255,255,.025) 0 18px, rgba(0,0,0,.03) 18px 36px);
+      pointer-events:none;
+    }
+    .banner-inner{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+      padding:26px;
+      position:relative;
+      z-index:1;
+    }
+    .event-tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      border:1px solid #4e6ea8;
+      color:#ffe6a8;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.10em;
+    }
+    h1{
+      margin:14px 0 10px;
+      font-size:clamp(30px, 5vw, 58px);
+      line-height:1.04;
+      letter-spacing:.01em;
+    }
+    .desc{
+      margin:0;
+      max-width:690px;
+      color:#ced9f2;
+      line-height:1.95;
+      font-size:16px;
+    }
+    .desc b{color:var(--gold-2)}
+    .event-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+    .meta-pill{
+      padding:10px 12px;
+      border-radius:12px;
+      background:rgba(0,0,0,.18);
+      border:1px solid #3b558c;
+      font-size:13px;
+      color:#e7eeff;
+    }
+
+    .preview-card{
+      border-radius:20px;
+      border:1px solid #446093;
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      padding:14px;
+      min-height:280px;
+      position:relative;
+      overflow:hidden;
+    }
+    .preview-title{
+      font-size:12px;
+      color:#9ab1df;
+      letter-spacing:.12em;
+      font-weight:900;
+      margin-bottom:10px;
+    }
+    .mini-map{
+      height:220px;
+      border-radius:16px;
+      border:1px solid #5272ac;
+      background:
+        radial-gradient(circle at 30% 32%, #2f4b39 0 13%, transparent 14%),
+        radial-gradient(circle at 74% 58%, #375442 0 12%, transparent 13%),
+        radial-gradient(circle at 65% 24%, #4f6957 0 8%, transparent 9%),
+        linear-gradient(180deg, #304732 0%, #243829 100%);
+      position:relative;
+      overflow:hidden;
+    }
+    .mini-map::before{
+      content:"";
+      position:absolute; inset:0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px);
+      background-size:28px 28px;
+      opacity:.25;
+    }
+    .zone{
+      position:absolute;
+      width:180px;height:180px;border-radius:50%;
+      top:50%;left:50%;transform:translate(-50%,-40%);
+      border:3px solid rgba(255,223,154,.88);
+      box-shadow:0 0 0 999px rgba(166,58,58,.22), inset 0 0 20px rgba(255,255,255,.12);
+    }
+    .marker{
+      position:absolute;
+      width:30px;height:30px;border-radius:50%;
+      display:grid;place-items:center;
+      background:rgba(13,22,40,.88);
+      border:1px solid #6a88be;
+      color:#fff;
+      font-size:15px;
+      box-shadow:0 8px 18px rgba(0,0,0,.3);
+    }
+    .m1{top:20%;left:18%}
+    .m2{top:25%;left:70%}
+    .m3{top:66%;left:38%}
+    .m4{top:72%;left:76%}
+    .m5{top:46%;left:52%}
+    .map-status{
+      display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap;
+      margin-top:10px;
+      color:#dbe6ff;
+      font-size:12px;
+    }
+
+    .panel{
+      margin-top:18px;
+      border-radius:22px;
+      border:1px solid #29406a;
+      background:linear-gradient(180deg, #131d35, #10192f);
+      overflow:hidden;
+    }
+    .panel-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      background:linear-gradient(180deg, #20325b, #172645);
+      border-bottom:1px solid #2f4777;
+    }
+    .panel-title{
+      font-size:20px;
+      font-weight:1000;
+      color:#ffe8ae;
+    }
+    .panel-tabs{
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .tab{
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid #42619c;
+      background:rgba(255,255,255,.04);
+      color:#d6e2ff;
+    }
+    .panel-body{
+      padding:18px;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+    }
+    .card{
+      border-radius:18px;
+      border:1px solid #2e4674;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      padding:16px;
+      min-height:150px;
+      position:relative;
+      overflow:hidden;
+    }
+    .card::after{
+      content:"";
+      position:absolute;
+      top:0; right:0;
+      width:92px; height:92px;
+      background:radial-gradient(circle, rgba(255,255,255,.06), transparent 70%);
+      pointer-events:none;
+    }
+    .card .icon{
+      width:40px;height:40px;border-radius:12px;
+      display:grid;place-items:center;
+      background:linear-gradient(180deg, #314f86, #243b64);
+      border:1px solid #5878b4;
+      margin-bottom:10px;
+      font-size:20px;
+    }
+    .card .title{
+      font-size:18px;
+      font-weight:1000;
+      color:#f4e1ad;
+      margin-bottom:7px;
+    }
+    .card p, .card li{
+      color:#cbd8f2;
+      line-height:1.85;
+      font-size:14px;
+    }
+    .card ul{
+      margin:8px 0 0 18px;
+      padding:0;
+    }
+
+    .two-col{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:14px;
+    }
+
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .list-item{
+      display:grid;
+      grid-template-columns:56px 1fr;
+      gap:12px;
+      align-items:start;
+      border:1px solid #2e4674;
+      border-radius:16px;
+      padding:12px;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+    }
+    .portrait{
+      width:56px;height:56px;border-radius:14px;
+      display:grid;place-items:center;
+      font-size:24px;
+      background:linear-gradient(180deg, #395b96, #243a63);
+      border:1px solid #5d7eb8;
+    }
+    .list-item .name{
+      font-weight:1000;
+      color:#ffe6aa;
+      margin-bottom:4px;
+    }
+    .list-item .text{
+      color:#ccd8f0;
+      line-height:1.8;
+      font-size:14px;
+    }
+
+    .reward-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+    }
+    .reward{
+      border-radius:16px;
+      border:1px solid #355081;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      padding:14px;
+    }
+    .reward .r-top{
+      display:flex; align-items:center; gap:10px;
+      margin-bottom:8px;
+    }
+    .rarity{
+      min-width:54px;
+      text-align:center;
+      padding:5px 8px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:1000;
+      letter-spacing:.08em;
+      color:#201812;
+      background:linear-gradient(90deg, #f0c877, #fff0bf);
+    }
+    .reward .name{
+      color:#f7e2af;
+      font-weight:1000;
+      font-size:16px;
+    }
+    .reward .text{
+      color:#cbd8f0;
+      line-height:1.8;
+      font-size:14px;
+    }
+
+    .final-box{
+      margin-top:16px;
+      border-radius:18px;
+      border:1px solid #476397;
+      background:
+        radial-gradient(circle at top, rgba(255,220,140,.10), transparent 35%),
+        linear-gradient(180deg, rgba(39,61,106,.45), rgba(18,27,49,.75));
+      padding:22px;
+      text-align:center;
+    }
+    .final-box .title{
+      font-size:32px;
+      font-weight:1000;
+      color:#ffe7ad;
+      margin:0 0 8px;
+    }
+    .final-box p{
+      max-width:780px;
+      margin:0 auto;
+      color:#d5e1fb;
+      line-height:1.95;
+      font-size:16px;
+    }
+    .timer{
+      display:inline-block;
+      margin-top:14px;
+      padding:12px 16px;
+      border-radius:12px;
+      border:1px solid #5a7bbb;
+      background:rgba(10,18,34,.45);
+      color:#fff1c7;
+      font-weight:1000;
+      letter-spacing:.06em;
+    }
+    .btns{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+    }
+    .btn{
+      appearance:none;
+      border:none;
+      border-radius:999px;
+      padding:13px 20px;
+      font-weight:1000;
+      cursor:pointer;
+      font-size:15px;
+      color:#1b1e24;
+      background:linear-gradient(90deg, #f1c97a, #ffeab6);
+      box-shadow:0 12px 24px rgba(0,0,0,.26);
+    }
+    .btn.secondary{
+      color:#e8f0ff;
+      background:linear-gradient(180deg, #345184, #24385f);
+      border:1px solid #6282bd;
+    }
+    .hint{
+      margin-top:8px;
+      color:#90a5d4;
+      font-size:13px;
+    }
+
+    @media (max-width: 1020px){
+      .content, .banner-inner, .two-col, .cards, .reward-grid, .hero-cards{
+        grid-template-columns:1fr !important;
+      }
+      .sidebar{display:none}
+    }
+    @media (max-width: 640px){
+      .app{width:min(100% - 10px, 1280px); margin:10px auto;}
+      .topbar{height:auto; padding:12px; gap:10px; align-items:flex-start; flex-direction:column;}
+      .banner-inner, .panel-body{padding:14px}
+      .panel-head{padding:12px}
+      .main{padding:12px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="logo">
+        <div class="logo-badge">⚔</div>
+        <div>夢幻模擬戰｜限時活動中心</div>
+      </div>
+      <div class="resources">
+        <div class="res">聖魔晶 × 1888</div>
+        <div class="res">金幣 × 3,245,000</div>
+        <div class="res">體力 × 120 / 120</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <aside class="sidebar">
+        <div class="sidebar-title">EVENT NAVIGATION</div>
+        <div class="menu">
+          <div class="menu-item">
+            春季簽到祭
+            <span class="small">每日登入領取獎勵</span>
+          </div>
+          <div class="menu-item">
+            光輝遠征
+            <span class="small">關卡挑戰與排行</span>
+          </div>
+          <div class="menu-item active">
+            戰棋也能吃雞
+            <span class="small">愚人節限定大逃殺玩法</span>
+          </div>
+          <div class="menu-item">
+            神殿特訓週
+            <span class="small">養成資源大量掉落</span>
+          </div>
+          <div class="menu-item">
+            英雄試煉
+            <span class="small">體驗新角專屬關卡</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <section class="banner">
+          <div class="banner-inner">
+            <div>
+              <div class="event-tag">LIMITED EVENT · APRIL FOOLS SPECIAL</div>
+              <h1>新活動「戰棋也能吃雞」<br>大逃殺玩法登場</h1>
+              <p class="desc">
+                指揮官，準備從飛空艇出擊。這一次你不只要算格子，還要
+                <b>跳傘、搶裝、蹲草、跑圈、搶空投</b>，
+                在不斷縮小的戰場上活到最後，成為唯一成功吃雞的小隊。
+              </p>
+              <div class="event-meta">
+                <div class="meta-pill">玩法類型：戰棋 × 大逃殺</div>
+                <div class="meta-pill">參戰人數：100 名指揮官</div>
+                <div class="meta-pill">最終圈：3 × 3 格</div>
+              </div>
+            </div>
+
+            <div class="preview-card">
+              <div class="preview-title">BATTLEFIELD PREVIEW</div>
+              <div class="mini-map">
+                <div class="zone"></div>
+                <div class="marker m1">🪂</div>
+                <div class="marker m2">📦</div>
+                <div class="marker m3">⚔️</div>
+                <div class="marker m4">🌲</div>
+                <div class="marker m5">👑</div>
+              </div>
+              <div class="map-status">
+                <span>PLAYER：100</span>
+                <span>SAFE ZONE：PHASE 04</span>
+                <span>WARNING：混沌侵蝕中</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div class="panel-title">活動玩法說明</div>
+            <div class="panel-tabs">
+              <div class="tab">基本規則</div>
+              <div class="tab">地圖機制</div>
+              <div class="tab">縮圈流程</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="cards">
+              <article class="card">
+                <div class="icon">🪂</div>
+                <div class="title">100 人同場空降</div>
+                <p>所有英雄從飛空艇隨機降落戰場。落地速度決定你能先撿到神裝，還是只能先找草叢保命。</p>
+              </article>
+              <article class="card">
+                <div class="icon">🌪️</div>
+                <div class="title">安全區持續縮小</div>
+                <p>停留在圈外的角色會受到混沌侵蝕傷害。還沒打贏對手，可能就先輸給毒圈。</p>
+              </article>
+              <article class="card">
+                <div class="icon">🌲</div>
+                <div class="title">地形伏擊全面實裝</div>
+                <p>高地有視野優勢，森林能藏人，水域拖慢走位。原來戰棋地形真的可以拿來吃雞。</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div class="panel-title">特別規則與英雄被動</div>
+            <div class="panel-tabs">
+              <div class="tab">補給箱</div>
+              <div class="tab">老陰比戰術</div>
+              <div class="tab">角色特性</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="two-col">
+              <div class="card">
+                <div class="title">補給箱掉落內容</div>
+                <ul>
+                  <li>SSR 武器、防具與稀有附魔</li>
+                  <li>超絕強化卷軸、再行動球</li>
+                  <li>緊急回血便當與偽裝披風</li>
+                  <li>傳說中的「縮圈免疫 3 秒」神級道具</li>
+                </ul>
+              </div>
+
+              <div class="list">
+                <div class="list-item">
+                  <div class="portrait">⚔️</div>
+                  <div>
+                    <div class="name">雪莉</div>
+                    <div class="text">擊殺後可再次移動。專業收頭、專業補刀、專業讓殘血玩家當場失去希望。</div>
+                  </div>
+                </div>
+                <div class="list-item">
+                  <div class="portrait">🛡️</div>
+                  <div>
+                    <div class="name">雷丁</div>
+                    <div class="text">站著不動久了看起來很像補給箱。等對手靠近後，正義反擊直接結算人生。</div>
+                  </div>
+                </div>
+                <div class="list-item">
+                  <div class="portrait">💀</div>
+                  <div>
+                    <div class="name">波贊魯</div>
+                    <div class="text">適合守在圈邊散播絕望。別人在跑毒，他在微笑。</div>
+                  </div>
+                </div>
+                <div class="list-item">
+                  <div class="portrait">🐎</div>
+                  <div>
+                    <div class="name">利昂</div>
+                    <div class="text">全地圖高速追擊，專門處理那些「我差一格就進圈」的倒楣玩家。</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div class="panel-title">活動獎勵</div>
+            <div class="panel-tabs">
+              <div class="tab">參與獎勵</div>
+              <div class="tab">排名成就</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="reward-grid">
+              <div class="reward">
+                <div class="r-top">
+                  <div class="rarity">LIMIT</div>
+                  <div class="name">限定稱號：最後的指揮官</div>
+                </div>
+                <div class="text">參與活動即可領取，證明你至少有嘗試在最後一格活下來。</div>
+              </div>
+
+              <div class="reward">
+                <div class="r-top">
+                  <div class="rarity">LIMIT</div>
+                  <div class="name">頭像框：今晚吃聖雞</div>
+                </div>
+                <div class="text">愚人節限定外觀，適合炫耀你對戰棋吃雞的高度理解。</div>
+              </div>
+
+              <div class="reward">
+                <div class="r-top">
+                  <div class="rarity">EVENT</div>
+                  <div class="name">表情：蹲草叢偷看</div>
+                </div>
+                <div class="text">把所有老陰比戰術濃縮成一張表情圖，極具收藏價值。</div>
+              </div>
+
+              <div class="reward">
+                <div class="r-top">
+                  <div class="rarity">RARE</div>
+                  <div class="name">家具：飛空艇補給箱</div>
+                </div>
+                <div class="text">放進主城後，看起來像隨時準備再來一場不合理的大逃殺。</div>
+              </div>
+            </div>
+
+            <div class="final-box">
+              <div class="title">🎉 愚人節快樂！</div>
+              <p>
+                如果你看到這裡開始認真思考「戰棋大逃殺其實真的能玩」，
+                甚至已經在想誰最適合蹲草、誰最會跑圈、誰最適合搶空投，
+                那這個愚人節活動企劃就成功了。
+              </p>
+              <div class="timer">開放時間：2026 / 04 / 01　26:00 ～ 27:00</div>
+              <div class="btns">
+                <button class="btn" onclick="alert('系統提示：您已成功預約「戰棋也能吃雞」活動。\\n\\n請準備跳傘、搶裝、縮圈與最後一格的信仰對決。\\n\\n——愚人節快樂！')">立即前往預約</button>
+                <button class="btn secondary" onclick="window.print()">列印公告頁</button>
+              </div>
+              <div class="hint">※ 本頁為愚人節惡搞活動示意，非官方正式公告。</div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

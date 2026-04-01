@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>夢幻模擬戰：HEART OF WAR｜乙女戀愛學園祭版</title>
+  <style>
+    :root{
+      --sky:#eef6ff;
+      --pink:#ffe6ef;
+      --cream:#fffaf2;
+      --ink:#4b3b52;
+      --muted:#7d6d84;
+      --rose:#e97aa8;
+      --lav:#b494f0;
+      --mint:#8dcfb8;
+      --gold:#d9b86a;
+      --panel:#ffffffcc;
+      --line:#edddea;
+      --shadow:0 18px 45px rgba(107, 83, 122, .14);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+      color:var(--ink);
+      background:
+        linear-gradient(180deg, #f8fbff 0%, #fff7fb 42%, #fffdf7 100%);
+      min-height:100vh;
+      position:relative;
+      overflow-x:hidden;
+    }
+    body::before, body::after{
+      content:"";
+      position:fixed;
+      inset:auto;
+      width:340px;
+      height:340px;
+      border-radius:50%;
+      filter:blur(70px);
+      z-index:-1;
+      opacity:.45;
+    }
+    body::before{
+      top:-80px; left:-80px;
+      background:#d7ebff;
+    }
+    body::after{
+      right:-70px; bottom:-100px;
+      background:#ffd8e8;
+    }
+
+    .petal{
+      position:fixed;
+      font-size:22px;
+      opacity:.18;
+      z-index:-1;
+      animation: drift linear infinite;
+      user-select:none;
+    }
+    .p1{left:7%; top:-10%; animation-duration:20s;}
+    .p2{left:24%; top:-16%; animation-duration:24s;}
+    .p3{left:48%; top:-14%; animation-duration:18s;}
+    .p4{left:69%; top:-12%; animation-duration:26s;}
+    .p5{left:87%; top:-18%; animation-duration:22s;}
+    @keyframes drift{
+      0%{transform:translateY(0) rotate(0deg)}
+      100%{transform:translateY(120vh) rotate(240deg)}
+    }
+
+    .wrap{
+      width:min(1120px, calc(100% - 28px));
+      margin:26px auto 50px;
+    }
+
+    .hero{
+      position:relative;
+      border:1px solid rgba(255,255,255,.9);
+      border-radius:36px;
+      padding:36px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.94), rgba(255,250,252,.88));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(233,122,168,.12), transparent 18%),
+        radial-gradient(circle at 88% 18%, rgba(180,148,240,.12), transparent 18%),
+        linear-gradient(90deg, transparent 0 48%, rgba(255,255,255,.25) 50%, transparent 52%);
+      pointer-events:none;
+    }
+    .ribbon{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 16px;
+      border-radius:999px;
+      background:linear-gradient(90deg, #fff0f6, #f6f0ff);
+      border:1px solid #f1d8e8;
+      color:#9a5883;
+      font-weight:900;
+      letter-spacing:.08em;
+      font-size:13px;
+      box-shadow:0 8px 22px rgba(170,120,160,.08);
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:26px;
+      align-items:center;
+      margin-top:18px;
+    }
+    h1{
+      margin:8px 0 10px;
+      font-size:clamp(34px, 6vw, 70px);
+      line-height:1.02;
+      color:#5c4368;
+      letter-spacing:.01em;
+    }
+    .subtitle{
+      font-size:clamp(17px, 2vw, 21px);
+      line-height:1.95;
+      color:#6f6078;
+      max-width:720px;
+      margin:0;
+    }
+    .subtitle b{
+      color:#d95f97;
+    }
+
+    .poster{
+      position:relative;
+      min-height:330px;
+      border-radius:30px;
+      background:
+        linear-gradient(180deg, #fffafc, #fffefc);
+      border:1px solid #f2e5ed;
+      padding:20px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 16px 30px rgba(140, 110, 155, .08);
+    }
+    .poster .frame{
+      height:100%;
+      min-height:290px;
+      border-radius:24px;
+      border:2px dashed #eec9da;
+      background:
+        linear-gradient(180deg, #fff6fa 0%, #fffefb 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      text-align:center;
+      padding:22px;
+      position:relative;
+      overflow:hidden;
+    }
+    .poster .frame::before{
+      content:"★  ♡  ★  ♡";
+      position:absolute;
+      top:16px;
+      left:50%;
+      transform:translateX(-50%);
+      color:#d89ab7;
+      letter-spacing:.55em;
+      font-size:14px;
+    }
+    .poster .jp{
+      font-size:13px;
+      letter-spacing:.35em;
+      color:#b68aa0;
+      margin-bottom:10px;
+      text-transform:uppercase;
+    }
+    .poster .big{
+      font-size:clamp(26px, 3vw, 40px);
+      font-weight:1000;
+      line-height:1.18;
+      color:#6e4f7f;
+      margin-bottom:10px;
+    }
+    .poster .small{
+      color:#8c7894;
+      line-height:1.9;
+      font-size:15px;
+    }
+
+    .intro-cards{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+    }
+    .mini{
+      background:var(--panel);
+      border:1px solid #f1e5ef;
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 10px 24px rgba(145, 117, 145, .06);
+      line-height:1.7;
+    }
+    .mini .tag{
+      display:inline-block;
+      margin-bottom:8px;
+      font-size:12px;
+      padding:5px 9px;
+      border-radius:999px;
+      background:#fff2f8;
+      color:#bb5e8e;
+      font-weight:800;
+    }
+
+    .section{
+      margin-top:24px;
+      border-radius:34px;
+      padding:28px;
+      background:rgba(255,255,255,.82);
+      backdrop-filter: blur(8px);
+      border:1px solid rgba(255,255,255,.9);
+      box-shadow:var(--shadow);
+    }
+    .section h2{
+      margin:0 0 14px;
+      font-size:30px;
+      color:#5f456b;
+    }
+    .lead{
+      margin:0;
+      color:var(--muted);
+      line-height:1.95;
+      font-size:16px;
+    }
+
+    .academy{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+    .note{
+      border-radius:24px;
+      padding:20px;
+      background:linear-gradient(180deg, #fffefd, #fff6fa);
+      border:1px solid var(--line);
+    }
+    .note h3{
+      margin:0 0 10px;
+      color:#7a4d65;
+      font-size:21px;
+    }
+    .note p{
+      margin:0;
+      color:#746579;
+      line-height:1.95;
+    }
+
+    .routes{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
+    .route{
+      border-radius:26px;
+      background:linear-gradient(180deg, #fff, #fff8fb);
+      border:1px solid var(--line);
+      overflow:hidden;
+      box-shadow:0 10px 24px rgba(145, 117, 145, .06);
+    }
+    .route-head{
+      padding:18px 18px 14px;
+      color:#fff;
+      font-weight:900;
+      letter-spacing:.04em;
+      font-size:18px;
+    }
+    .dark .route-head{background:linear-gradient(90deg,#7f5aa9,#c37ab6);}
+    .emp .route-head{background:linear-gradient(90deg,#b6904b,#debc73);}
+    .chaos .route-head{background:linear-gradient(90deg,#d86a90,#f29cbc);}
+    .route-body{
+      padding:18px;
+      color:#6e6274;
+      line-height:1.9;
+    }
+    .stats{
+      margin-top:12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .stat{
+      font-size:12px;
+      font-weight:800;
+      border-radius:999px;
+      padding:6px 10px;
+      background:#f8edf3;
+      color:#a05b7e;
+    }
+
+    .system-list{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:16px;
+    }
+    .system{
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:20px;
+      background:linear-gradient(180deg,#ffffff,#fffbfd);
+    }
+    .system .title{
+      font-weight:1000;
+      color:#644972;
+      font-size:19px;
+      margin-bottom:8px;
+    }
+    .system ul{
+      margin:10px 0 0 18px;
+      padding:0;
+      line-height:1.95;
+      color:#746679;
+    }
+
+    .ending-board{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+    }
+    .endings, .launch{
+      border-radius:24px;
+      border:1px solid var(--line);
+      padding:22px;
+      background:linear-gradient(180deg,#fff,#fffafc);
+    }
+    .ending{
+      padding:12px 0;
+      border-bottom:1px dashed #edd9e6;
+      line-height:1.9;
+      color:#726476;
+    }
+    .ending:last-child{border-bottom:none; padding-bottom:0}
+    .ending strong{color:#5f476a}
+
+    .clock{
+      display:inline-block;
+      margin-top:10px;
+      padding:12px 16px;
+      border-radius:16px;
+      background:linear-gradient(90deg,#fbe7f1,#f7f0ff);
+      color:#8f4f76;
+      font-weight:1000;
+      letter-spacing:.06em;
+      border:1px solid #eed7e5;
+    }
+    .warn{
+      margin-top:10px;
+      color:#907684;
+      line-height:1.8;
+      font-size:14px;
+    }
+
+    .finale{
+      margin-top:22px;
+      text-align:center;
+      padding:34px 20px;
+      border-radius:28px;
+      background:
+        radial-gradient(circle at top, rgba(255,232,242,.92), rgba(255,250,251,.95) 50%, rgba(255,255,255,.96) 100%);
+      border:1px solid #f3d9e6;
+    }
+    .finale .emoji{
+      font-size:46px;
+      line-height:1;
+    }
+    .finale .title{
+      margin:8px 0 8px;
+      font-size:clamp(28px,4vw,44px);
+      font-weight:1000;
+      color:#c55f90;
+    }
+    .finale p{
+      margin:0 auto;
+      max-width:760px;
+      color:#7a697f;
+      line-height:1.95;
+      font-size:17px;
+    }
+
+    .btns{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top:20px;
+    }
+    .btn{
+      appearance:none;
+      border:none;
+      border-radius:999px;
+      padding:13px 20px;
+      font-weight:900;
+      cursor:pointer;
+      font-size:15px;
+      color:#fff;
+      background:linear-gradient(90deg, #e97aa8, #b691ef);
+      box-shadow:0 14px 28px rgba(186, 118, 170, .18);
+    }
+    .btn.secondary{
+      background:#fff;
+      color:#7b5d88;
+      border:1px solid #edddea;
+      box-shadow:none;
+    }
+
+    .footer{
+      text-align:center;
+      color:#9b8aa0;
+      margin:16px 0 8px;
+      font-size:14px;
+    }
+
+    @media (max-width: 940px){
+      .hero-grid, .academy, .routes, .system-list, .ending-board, .intro-cards{
+        grid-template-columns:1fr;
+      }
+    }
+    @media (max-width: 640px){
+      .wrap{width:min(100% - 16px, 1120px); margin:16px auto 34px;}
+      .hero,.section{padding:20px;}
+      .poster{min-height:auto}
+    }
+  </style>
+</head>
+<body>
+  <div class="petal p1">🌸</div>
+  <div class="petal p2">🌸</div>
+  <div class="petal p3">🌸</div>
+  <div class="petal p4">🌸</div>
+  <div class="petal p5">🌸</div>
+
+  <div class="wrap">
+    <section class="hero">
+      <div class="ribbon">SCHOOL FESTIVAL LOVE SIM × APRIL FOOLS</div>
+
+      <div class="hero-grid">
+        <div>
+          <h1>《夢幻模擬戰：<br>HEART OF WAR》</h1>
+          <p class="subtitle">
+            這一次，不再是聖劍對魔劍，也不是帝國與光輝軍團的對立——
+            而是在命運的春日學園祭裡，用 <b>愛</b> 攻略亂世。
+            艾爾文能否在心動與陰謀之間，成功征服波贊魯的心？
+            還是會被皇帝以壓倒性的氣勢 <b>橫刀奪愛</b>？
+          </p>
+        </div>
+
+        <div class="poster">
+          <div class="frame">
+            <div class="jp">Romance Simulation Project</div>
+            <div class="big">用愛來征服世界，<br>比戰略更困難。</div>
+            <div class="small">
+              春日、花瓣、校園祭、修羅場。<br>
+              以及那句誰都不敢直視的台詞：<br>
+              <b>「你，今天要選我，還是選世界？」</b>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="intro-cards">
+        <div class="mini">
+          <div class="tag">主題</div>
+          從戰棋史詩變成乙女戀愛視覺小說，整體氣質全面轉生。
+        </div>
+        <div class="mini">
+          <div class="tag">舞台</div>
+          平行世界的學園祭大陸，軍議廳改成學生會辦公室。
+        </div>
+        <div class="mini">
+          <div class="tag">目標</div>
+          攻略黑暗軍師、閃避皇帝奪愛，順便不要讓世界毀滅。
+        </div>
+        <div class="mini">
+          <div class="tag">危險</div>
+          每個選項都可能通往戀愛成功、修羅場，或直接進 Bad End。
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>世界觀重製</h2>
+      <p class="lead">
+        本作捨棄上一版那種「像官方公告」的硬派宣傳感，改以
+        <b>少女戀愛遊戲、學園祭特設頁、視覺小說官網</b>的路線重新包裝。
+        於是，戰場被花海取代，軍勢對壘變成校園情感攻防，而所有真正可怕的戰鬥，
+        都發生在對話選項出現的那一刻。
+      </p>
+
+      <div class="academy">
+        <div class="note">
+          <h3>🌸 春日學園祭版故事</h3>
+          <p>
+            艾爾文轉學進入「蘭古利薩皇家學園」的第一天，就被捲入學生會、
+            黑魔法研究社與帝國交換留學生之間的複雜感情糾葛。原本只想好好過完校園生活，
+            卻在與波贊魯共同準備學園祭展演時，逐漸看見那份藏在冷笑與陰謀背後的孤獨。
+          </p>
+        </div>
+        <div class="note">
+          <h3>👑 皇帝的危險發言</h3>
+          <p>
+            然而就在艾爾文與波贊魯的距離慢慢拉近之際，身為帝國學生會總會長的貝倫哈特，
+            卻以近乎宣戰的語氣宣布：「你沒有拒絕我的資格。」從此，學園祭不只是祭典，
+            而是一場充滿心機、壓迫感與玫瑰花瓣的戀愛攻防戰。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>可攻略路線</h2>
+
+      <div class="routes">
+        <article class="route dark">
+          <div class="route-head">💀 波贊魯線</div>
+          <div class="route-body">
+            黑暗軍師化身成陰鬱系天才學長。表面毒舌、實則脆弱，最擅長在放學後的空教室說出令人心跳加速又毛骨悚然的台詞。
+            <div class="stats">
+              <span class="stat">禁忌感 ★★★★★</span>
+              <span class="stat">甜度 ★★★☆☆</span>
+              <span class="stat">毀滅傾向 ★★★★★</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="route emp">
+          <div class="route-head">👑 皇帝線</div>
+          <div class="route-body">
+            貝倫哈特成為全學園最不可挑戰的男人。只要他一出場，背景就會自動響起管弦樂，你的選項也會明顯減少。
+            <div class="stats">
+              <span class="stat">壓迫感 ★★★★★</span>
+              <span class="stat">浪漫度 ★★★★☆</span>
+              <span class="stat">自主權 ★☆☆☆☆</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="route chaos">
+          <div class="route-head">💔 修羅場線</div>
+          <div class="route-body">
+            當你同時對兩邊釋出好感，系統將自動解鎖「學園祭公開對質事件」。屆時所有 NPC 都會圍觀，你的靈魂會先當場蒸發。
+            <div class="stats">
+              <span class="stat">刺激度 ★★★★★</span>
+              <span class="stat">生存率 ★★☆☆☆</span>
+              <span class="stat">名場面 ★★★★★</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>系統特色</h2>
+      <div class="system-list">
+        <div class="system">
+          <div class="title">♡ 好感度選項判定</div>
+          <ul>
+            <li>每句話都會影響「信任」「依賴」「危險度」三種隱藏數值。</li>
+            <li>面對波贊魯時，過度直球可能導致他直接黑化。</li>
+            <li>面對皇帝時，沉默也會被視為一種默許。</li>
+          </ul>
+        </div>
+
+        <div class="system">
+          <div class="title">★ 戀愛 CG 事件</div>
+          <ul>
+            <li>圖書館借書撞肩事件</li>
+            <li>天台晚風與世界毀滅相談事件</li>
+            <li>學園祭舞台後台被皇帝堵門事件</li>
+          </ul>
+        </div>
+
+        <div class="system">
+          <div class="title">✦ 文字冒險演出</div>
+          <ul>
+            <li>每條路線擁有獨立色系與專屬 BGM。</li>
+            <li>波贊魯線介面逐漸轉暗，並出現不明紫色霧氣。</li>
+            <li>皇帝線按鈕會越來越像「命令」。</li>
+          </ul>
+        </div>
+
+        <div class="system">
+          <div class="title">☘ Bad End 收藏</div>
+          <ul>
+            <li>「世界先毀滅了」結局</li>
+            <li>「被學生會永久留校察看」結局</li>
+            <li>「誰都沒選，回去打戰棋」結局</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>結局與發售情報</h2>
+      <div class="ending-board">
+        <div class="endings">
+          <div class="ending"><strong>真愛結局：</strong> 成功理解波贊魯的內心，兩人在花海中約定要以愛改寫世界。</div>
+          <div class="ending"><strong>帝國結局：</strong> 被貝倫哈特以極其優雅但毫無商量餘地的方式帶走。</div>
+          <div class="ending"><strong>和平結局：</strong> 所有人放下爭鬥，但關係圖變得比戰略地圖還難懂。</div>
+          <div class="ending"><strong>單身結局：</strong> 戀愛全面失敗，艾爾文重新把心力投入兵種相剋研究。</div>
+        </div>
+
+        <div class="launch">
+          <h3>上線時間</h3>
+          <div class="clock">2026 / 04 / 01　24:61</div>
+          <div class="warn">
+            ※ 這是一個不存在於人間曆法中的神祕時間。<br>
+            ※ 如果你看到這裡已經開始期待正式版，那愚人節企劃就成功了。
+          </div>
+        </div>
+      </div>
+
+      <div class="finale">
+        <div class="emoji">🎀</div>
+        <div class="title">愚人節快樂！</div>
+        <p>
+          這次特別把風格改成更像乙女遊戲官網與學園祭活動頁，
+          跟前一版的「遊戲公告風」切開來。整體更柔和、更戀愛、更像真的會出現在某個神祕官方特設頁裡。
+        </p>
+
+        <div class="btns">
+          <button class="btn" onclick="alert('系統提示：您已成功預約《HEART OF WAR》學園祭限定版。\\n\\n特典包含：波贊魯神祕情書、皇帝學生會邀請函、以及艾爾文的選項存檔券。\\n\\n——愚人節快樂！')">預約學園祭限定版</button>
+          <button class="btn secondary" onclick="window.print()">列印頁面</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      本頁為愚人節惡搞企劃示意，非官方正式公告。
+    </div>
+  </div>
+</body>
+</html>
